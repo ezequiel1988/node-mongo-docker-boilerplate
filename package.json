@@ -1,0 +1,20 @@
+{
+  "name": "crud-en-node",
+  "version": "1.0.0",
+  "description": "Practicando peticiones en node e integración con React-Node",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "author": "ezequiel olivera",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.6.4",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.19.1"
+  }
+}
