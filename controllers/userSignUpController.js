@@ -17,8 +17,10 @@ exports.registrarUsuario = async (req, res)=>{
             password: req.body.password
         }
     })
-
+    
     try {
+        
+        usuarioARegistrar.password = await usuarioARegistrar.encryptPassword(usuarioARegistrar.password)
         const data = await usuarioARegistrar.save()
         res.send(data)
     } catch (err) {
