@@ -14,24 +14,28 @@ const signUpSchema = new Schema({
     },
     email: {
         type: String,
-        required:[true, "El email es requerido"]
+        required:[true, "El email es requerido"],
+        unique:true
     },
     password: {
         type: String,
-        required:[true, "Se requiere un password"]
+        required:[true, "Se requiere un password"],
+        unique:true
     }
 }})
 
+
 //Ciframos la contraseña
-signUpSchema.methods.encryptPassword = async (password) => {
-    const salt = await bcrypt.getSalt(10);
+signUpSchema.methods.encryptPassword = async (password) => {    
+    const salt = await bcrypt.genSalt(10);    
     const hash = bcrypt.hash(password, salt);
     return hash;
 }
 
 //Compara las contraseñas
 signUpSchema.methods.matchPassword = async function (password) {
-  return await  bcrypt.compare(password, this.usuarioRegistrado.password)
+  return await  bcrypt.compare(password, this.password)
 }
+
 
 module.exports = mongoose.model("userSignUp",signUpSchema)

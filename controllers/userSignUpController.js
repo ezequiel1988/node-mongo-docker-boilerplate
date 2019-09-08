@@ -17,10 +17,26 @@ exports.registrarUsuario = async (req, res)=>{
             password: req.body.password
         }
     })
-    
-    try {
+
+    try {        
+        const userEmail = await UserSignUp.findOne({
+            "usuarioRegistrado.email": req.body.email
+        })
         
-        usuarioARegistrar.password = await usuarioARegistrar.encryptPassword(usuarioARegistrar.password)
+        if (userEmail) {            
+            res.status(500).send({
+                mensaje: "El email ya está en uso"
+            })
+        }
+    } catch (err) {
+        console.error(err);
+        
+    }
+    
+    try {  
+        //Guarda la contraseña cifrada    
+        usuarioARegistrar.usuarioRegistrado.password = await usuarioARegistrar.encryptPassword(usuarioARegistrar.usuarioRegistrado.password)        
+       //Guarda el usuario registrado
         const data = await usuarioARegistrar.save()
         res.send(data)
     } catch (err) {
