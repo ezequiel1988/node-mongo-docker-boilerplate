@@ -23,7 +23,8 @@ app.use(function(req, res, next) {
     next();
   });
 
-  require("./routes/userRoutes")(app)
+  require("./routes/userRoutes")(app);
+  require("./routes/loginRoutes")(app)
 
 
 //

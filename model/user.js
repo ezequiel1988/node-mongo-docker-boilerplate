@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 
 
 const usersSchema = new Schema ({
-  id: {
-    type: Number,
-    required: [true,"el id es necesario"]
+  age: {
+    type: String,
+    required: [true,"la edad es necesaria"]
   },
   name: {
     type: String,

@@ -1,15 +1,15 @@
 const Usuario = require("../model/user");
 
 //Crear nuevo usuario
-exports.create = (req, res) => {
+exports.create = (req, res) => {  
   if (!req.body) {
     return res.status(400).send({
-      message: "Product content can not be empty"
+      message: "No se ha enviado ningún tipo de dato"
     });
   }
   // Crear un usuario
 const usuario = new Usuario({
-  id: req.body.id,
+  age: req.body.age,
   name: req.body.name,
   lastName: req.body.lastName,
   email: req.body.email
@@ -53,8 +53,7 @@ exports.findOne = (req, res) => {
         mensaje: `El usuario con el id ${req.params.usuarioId} no se encuentra`
       });
     }
-    res
-      .send(usuario)
+    res.send(usuario)
 
       .catch(err => {
         console.log(err);
@@ -120,17 +119,17 @@ exports.update = (req, res) => {
 //Eliminar usuario por su id
 
 exports.delete = (req, res) => {
-  Usuario.findAndModify(req.params.usuarioId)
+  console.log(req.body);
+  
+  Usuario.findByIdAndRemove(req.params.usuarioId)
   .then(usuario => {
     if (!usuario) {
       res.status(404).send({
         mensaje: `El usuario con el id ${req.params.usuarioId} no se encuentra`
       });
     }
-    res.send({
-        mensaje: "Usuario eliminado correctamente"
-      })
-      .catch(err => {
+    res.send({mensaje: "Usuario eliminado correctamente"})
+  }).catch(err => {
         console.log(err);
         if (err.kind === "ObjectId" || err.name === "NotFound") {
           res.status(404).send({
@@ -140,10 +139,8 @@ exports.delete = (req, res) => {
           });
         }
         res.status(500).send({
-          mensaje: `No se puede eliminar el usuario con el id ${
-            req.params.usuarioId
-          }`
-        });
-      });
-  });
-};
+          mensaje: 
+          `No se puede eliminar el usuario con el id ${req.params.usuarioId}`});
+      })
+}
+
