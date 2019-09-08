@@ -1,10 +1,13 @@
 const express = require('express');
 const app = express();
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const passport = require("passport")
+const session = require("express-session")
 
+
+require("./config/passport");
 //Configuracion del puerto
-
 app.set("port", process.env.PORT || 3000)
 
 //Conexion a la base de datos
@@ -22,6 +25,13 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
   });
+  app.use(session({
+    secret: "mysecretapp",
+    resave:true,
+    saveUninitialized:true
+  }))
+  app.use(passport.initialize());
+  app.use(session())
 
   require("./routes/userRoutes")(app);
   require("./routes/loginRoutes")(app)

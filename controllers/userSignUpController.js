@@ -1,4 +1,5 @@
 const UserSignUp = require("../model/usuarioLogeado.js");
+const passport = require("passport");
 
 
 //Registrar un usuario nuevo
@@ -10,17 +11,15 @@ exports.registrarUsuario = async (req, res)=>{
     }
 
     const usuarioARegistrar = await new UserSignUp({
-        usuarioRegistrado: {
             nombre: req.body.nombre,
             apellido: req.body.apellido,
             email: req.body.email,
             password: req.body.password
-        }
     })
 
     try {        
         const userEmail = await UserSignUp.findOne({
-            "usuarioRegistrado.email": req.body.email
+            "email": req.body.email
         })
         
         if (userEmail) {            
@@ -35,7 +34,7 @@ exports.registrarUsuario = async (req, res)=>{
     
     try {  
         //Guarda la contraseña cifrada    
-        usuarioARegistrar.usuarioRegistrado.password = await usuarioARegistrar.encryptPassword(usuarioARegistrar.usuarioRegistrado.password)        
+        usuarioARegistrar.password = await usuarioARegistrar.encryptPassword(usuarioARegistrar.password)        
        //Guarda el usuario registrado
         const data = await usuarioARegistrar.save()
         res.send(data)
@@ -59,3 +58,9 @@ exports.findAll = async (req, res) => {
         })
     } 
 }
+
+exports.login = passport.authenticate("local",{
+    successMessage: "Usuario logeado correctamente",
+    failureMessage: "Hubo un problema al logearse",
+    failureFlash: true
+})

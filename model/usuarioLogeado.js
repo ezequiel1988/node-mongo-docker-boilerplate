@@ -3,7 +3,6 @@ const Schema = mongoose.Schema;
 const bcrypt = require("bcryptjs")
 
 const signUpSchema = new Schema({
-    usuarioRegistrado: {
     nombre: {
         type: String,
         required: [true, "El nombre es requerido"]
@@ -21,7 +20,6 @@ const signUpSchema = new Schema({
         type: String,
         required:[true, "Se requiere un password"],
         unique:true
-    }
 }})
 
 

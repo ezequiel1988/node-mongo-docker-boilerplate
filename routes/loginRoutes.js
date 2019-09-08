@@ -5,4 +5,6 @@ module.exports = (router)=>{
     router.get("/signUp", usuarioRegistrado.findAll)
 
     router.post("/signUp", usuarioRegistrado.registrarUsuario)
+
+    router.post("/login", usuarioRegistrado.login)
 }
