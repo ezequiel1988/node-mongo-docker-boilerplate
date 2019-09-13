@@ -1,10 +1,13 @@
 module.exports = (router)=>{
 
-    const usuarioRegistrado = require("../controllers/userSignUpController")
+    require("jsonwebtoken");
+    const usuarioRegistrado = require("../controllers/userSignUpController");
 
-    router.get("/signUp", usuarioRegistrado.findAll)
+    router.get("/signUp",usuarioRegistrado.verifyToken, usuarioRegistrado.findAll)
 
-    router.post("/signUp", usuarioRegistrado.registrarUsuario)
+    router.post("/signUp", usuarioRegistrado.verifyToken, usuarioRegistrado.registrarUsuario)
 
-    router.post("/login", usuarioRegistrado.login)
-}
+    router.post("/login",usuarioRegistrado.verifyToken, usuarioRegistrado.registrarUsuario);
+    //router.get("/login", usuarioRegistrado.logeado)
+   
+    }

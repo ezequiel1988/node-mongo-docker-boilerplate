@@ -1,12 +1,26 @@
 const UserSignUp = require("../model/usuarioLogeado.js");
 const passport = require("passport");
+const jwt = require("jsonwebtoken")
 
 
 //Registrar un usuario nuevo
 exports.registrarUsuario = async (req, res)=>{
+
+    jwt.verify(req.token, "secretkey", (err, autData)=> {
+
+            if(err) {
+                res.sendStatus(403)
+            } else {
+                res.json({
+                    mensaje: "no se que va acá",
+                    autData
+                })
+            }
+    })
+
     if(!req.body) {
         return res.status(400).send({
-            mensaje: "Hubo un error al registrar usuario"
+            mensaje: "Usuario logeado correctamente"
         })
     }
 
@@ -17,10 +31,18 @@ exports.registrarUsuario = async (req, res)=>{
             password: req.body.password
     })
 
+    jwt.sign({usuarioARegistrar}, "secretkey", (err, token) => {
+        if(err) {
+            console.log(err)            
+        }
+        res.send({token})
+        
+    })
+
     try {        
         const userEmail = await UserSignUp.findOne({
             "email": req.body.email
-        })
+        })        
         
         if (userEmail) {            
             res.status(500).send({
@@ -59,8 +81,16 @@ exports.findAll = async (req, res) => {
     } 
 }
 
-exports.login = passport.authenticate("local",{
-    successMessage: "Usuario logeado correctamente",
-    failureMessage: "Hubo un problema al logearse",
-    failureFlash: true
-})
+exports.verifyToken = function (req, res, next) {
+    const bearerHeader =  req.headers["authorization"];
+    if(typeof bearerHeader !== "undefined") {
+
+        const bearer = bearerHeader.split(" ");
+        const bearerToken = bearer[1];
+        req.token = bearerToken;
+        next();
+
+    } else {
+        res.sendStatus(403)
+    }
+}
