@@ -1,5 +1,5 @@
 module.exports = router => {
-  const usuarioRegistrado = require("../controllers/userSignUpController");  
+  const usuarioRegistrado = require("../controllers/userSignUpController");
 
   //Rgistra un nuevo usuario
   router.post("/signUp", usuarioRegistrado.registrarUsuario);
