@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const passport = require("passport")
+const passport = require("passport");
 const session = require("express-session")
 
 
@@ -26,7 +26,13 @@ app.use(function(req, res, next) {
     next();
   });
  
+  app.use(session({
+    secret: "MySecret",
+    resave: false,
+    saveUninitialized:false
+  }))
   app.use(passport.initialize());
+  app.use(passport.session());
 
     
 

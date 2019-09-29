@@ -4,8 +4,8 @@ const LocalStrategy = require("passport-local").Strategy;
 const User = require("../model/usuarioLogeado")
 
 
-passport.use(new LocalStrategy({
-    usernameField:"email"
+passport.use("passport",new LocalStrategy({
+    usernameField:"email", passReqToCallback: true
 }, async  (email, password, done)=>{
     const user = await User.findOne({"email": email});
     if(!user) {

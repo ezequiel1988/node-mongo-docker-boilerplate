@@ -1,13 +1,24 @@
-module.exports = (router)=>{
+module.exports = router => {
+  const usuarioRegistrado = require("../controllers/userSignUpController");  
 
-    require("jsonwebtoken");
-    const usuarioRegistrado = require("../controllers/userSignUpController");
+  //Rgistra un nuevo usuario
+  router.post("/signUp", usuarioRegistrado.registrarUsuario);
 
-    router.get("/signUp",usuarioRegistrado.verifyToken, usuarioRegistrado.findAll)
+  router.get("/signIn", usuarioRegistrado.findAll);
 
-    router.post("/signUp", usuarioRegistrado.verifyToken, usuarioRegistrado.registrarUsuario)
+  router.post("/signIn", usuarioRegistrado.registrarUsuario);
 
-    router.post("/login",usuarioRegistrado.verifyToken, usuarioRegistrado.registrarUsuario);
-    //router.get("/login", usuarioRegistrado.logeado)
-   
+  //Se loguea el usuario que se registró previamente y recibe un token
+  router.post("/login", usuarioRegistrado.loginUsuario);
+
+  //Método que sirve para probar el usuario logeado. Se debe enviar el token
+  //por Authorization
+  router.get("/profile", usuarioRegistrado.verifyToken, async (req, res) => {
+    try {
+      const data = res.status(200).send("Bienvenido a tú perfil");
+      return data;
+    } catch (error) {
+      console.log(error);
     }
+  });
+};
