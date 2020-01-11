@@ -4,10 +4,11 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const session = require("express-session");
+const cors = require('cors')
 
 require("./config/passport");
 //Configuracion del puerto
-app.set("port", process.env.PORT || 3000);
+app.set("port", process.env.PORT || 4000);
 
 //Conexion a la base de datos
 
@@ -19,6 +20,7 @@ mongoose
 //middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors());
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");

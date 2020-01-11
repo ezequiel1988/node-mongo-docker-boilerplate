@@ -2,14 +2,12 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcryptjs");
 
-const signUpSchema = new Schema({
+const loginSchema = new Schema({
   nombre: {
-    type: String,
-    required: [true, "El nombre es requerido"]
+    type: String
   },
   apellido: {
-    type: String,
-    required: [true, "EL apellido es requerido"]
+    type: String
   },
   email: {
     type: String,
@@ -24,15 +22,15 @@ const signUpSchema = new Schema({
 });
 
 //Ciframos la contraseña
-signUpSchema.methods.encryptPassword = async password => {
+loginSchema.methods.encryptPassword = async password => {
   const salt = await bcrypt.genSalt(10);
   const hash = bcrypt.hash(password, salt);
   return hash;
 };
 
 //Compara las contraseñas
-signUpSchema.methods.matchPassword = async function(password) {
+loginSchema.methods.matchPassword = async function(password) {
   return await bcrypt.compare(password, this.password);
 };
 
-module.exports = mongoose.model("userSignUp", signUpSchema);
+module.exports = mongoose.model("LoginUserModel", loginSchema);
