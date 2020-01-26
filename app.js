@@ -43,6 +43,7 @@ app.use(passport.session());
 
 require("./routes/userRoutes")(app);
 require("./routes/loginRoutes")(app);
+require("./routes/productsRoute")(app);
 
 //
 
