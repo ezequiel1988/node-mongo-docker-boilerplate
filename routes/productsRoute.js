@@ -7,4 +7,7 @@ module.exports = router => {
 
     router.get('/home/productos/:page', productoRouter.productsPerPage);
 
+    router.get('/home/productos/category/:category', productoRouter.findByCategory);
+
+
 }

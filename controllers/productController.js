@@ -87,7 +87,7 @@ exports.productsPerPage = async (req, res) => {
         .skip((perPage * page) - perPage)
         .limit(perPage)
         .exec((err, productos) => {
-            Producto.count((err, count) => {
+            Producto.countDocuments((err, count) => {
 
                 if(err) return res.status(500).send({mensaje: 'Hubo un error al entregar estos datos'});
                 res.status(200).send({
@@ -97,4 +97,21 @@ exports.productsPerPage = async (req, res) => {
                 })
             })
         })
+}
+
+exports.findByCategory = async (req, res)=> {
+    
+    const { category } = req.params
+
+    try {
+      const response = await Producto.find({category});
+      res.status(200).send({
+          'Mensaje': response
+      })
+    } catch (e) {
+        console.log(e);
+        res.status(500).send({
+            'Mensaje': 'Hubo un error al cargar los datos'
+        })
+    }
 }
