@@ -19,7 +19,13 @@ const registerSchema = new Schema({
   password: {
     type: String,
     required: [true, "Se requiere un password"],
-  }
+  },
+  productos:[{
+      type: Schema.Types.ObjectId,
+      ref:'Productos'
+  }]
+}, {
+    timestamps:true
 });
 
 //Ciframos la contraseña

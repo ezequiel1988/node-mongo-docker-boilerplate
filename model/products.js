@@ -22,6 +22,8 @@ const productsSchema = new Schema({
         type: Date,
         default: new Date()
     }
+}, {
+    timestamps: true
 });
 
 module.exports = model('Productos', productsSchema)
