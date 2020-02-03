@@ -1,4 +1,5 @@
 const LoginUserModel = require("../model/loginModel.js");
+const RegistroModel = require("../model/registerModel");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 
@@ -10,7 +11,7 @@ exports.registrarUsuario = async (req, res) => {
     });
   }
 
-  const usuarioARegistrar = await new LoginUserModel({
+  const usuarioARegistrar = await new RegistroModel({
     nombre: req.body.nombre,
     apellido: req.body.apellido,
     email: req.body.email,
@@ -18,7 +19,7 @@ exports.registrarUsuario = async (req, res) => {
   });
 
   try {
-    const userEmail = await LoginUserModel.findOne({
+    const userEmail = await RegistroModel.findOne({
       email: req.body.email
     });
 
@@ -42,34 +43,35 @@ exports.registrarUsuario = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send({
-      mensaje: "Hubo un problema al registar el usuario"
+      mensaje: `Hubo un problema al registar el usuario. Error: ${err}`
     });
   }
 };
 
 //login con un usuario registrado y envía un token
 exports.loginUsuario = async (req, res) => {
-  
   if (!req.body) {
     return res.status(400).send({
       mensaje: "Hubo un problema al iniciar sesión"
     });
   }
 
+  const { email, password } = req.body;
+
   try {
     const usuarioARegistrar = await new LoginUserModel({
-      nombre: req.body.nombre,
-      apellido: req.body.apellido,
-      email: req.body.email,
-      password: req.body.password
+      email: email,
+      password: password
     });
 
+    console.log(email, "email del req.body");
+
     try {
-      const { email } = await LoginUserModel.findOne({
-        email: req.body.email
+      const usuarioLogeado = await LoginUserModel.findOne({
+        email: email
       });
-  
-      if (email) {
+
+      if (usuarioLogeado !== null) {
         res.status(500).send({
           mensaje: `El usuario con el email ${email} ya inició sesión`
         });
@@ -77,39 +79,52 @@ exports.loginUsuario = async (req, res) => {
     } catch (err) {
       console.error(err);
     }
-    
-    jwt.sign({ usuarioARegistrar }, "secretkey", (err, token) => {
-      if (err) {
-        console.log(err);
-      }
-      res.send({ token });
-    });
-  
-    
-  
+
     try {
-      //Guarda la contraseña cifrada
-      usuarioARegistrar.password = await usuarioARegistrar.encryptPassword(usuarioARegistrar.password);
-  
-      //Guarda el usuario registrado
-      const data = await usuarioARegistrar.save();
-      res.send(data);
+      const usuario = await RegistroModel.findOne({ email: email });
+
+      if (usuario !== null) {
+        jwt.sign({ usuarioARegistrar }, "secretkey", (err, token) => {
+          if (err) {
+            console.log(err);
+          }
+          res.send({ token });
+        });
+
+        try {
+          //Guarda la contraseña cifrada
+          usuarioARegistrar.password = await usuarioARegistrar.encryptPassword(
+            usuarioARegistrar.password
+          );
+
+          //Guarda el usuario registrado
+          const data = await usuarioARegistrar.save();
+          res.send(data);
+        } catch (err) {
+          console.error(err);
+          res.status(500).send({
+            mensaje: "Hubo un problema al iniciar sesión"
+          });
+        }
+      } else {
+        console.log("Esto se debería ver");
+
+        res.status(500).send({
+          mensaje: `El usuario ${email} no está registrado`
+        });
+      }
     } catch (err) {
-      console.error(err);
-      res.status(500).send({
-        mensaje: "Hubo un problema al iniciar sesión"
-      });
+      console.log(err);
     }
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
-  
 };
 
 //Para acceder se necesita mandar un token por Authorization
 exports.findAll = async (req, res) => {
   jwt.verify(req.token, "secretkey", (err, autData) => {
-        //verifica quien es el usuario que hizo la petición
+    //verifica quien es el usuario que hizo la petición
     if (err) {
       res.sendStatus(403);
     } else {
@@ -131,7 +146,6 @@ exports.findAll = async (req, res) => {
 };
 
 exports.deleteLogin = (req, res) => {
-
   // jwt.verify(req.token, "secretkey", (err, autData) => {
   //   //verifica quien es el usuario que hizo la petición
   //   if (err) {
@@ -144,11 +158,11 @@ exports.deleteLogin = (req, res) => {
   //   }
   // });
 
-  console.log(req.body)
-    
-    LoginUserModel.findOneAndRemove({
-      email: req.body.email
-    })
+  console.log(req.body);
+
+  LoginUserModel.findOneAndRemove({
+    email: req.body.email
+  })
     .then(usuario => {
       if (!usuario) {
         res.status(404).send({
@@ -168,7 +182,7 @@ exports.deleteLogin = (req, res) => {
         mensaje: `No se puede eliminar el usuario con el email ${req.body.email}`
       });
     });
-}
+};
 
 exports.verifyToken = function(req, res, next) {
   const bearerHeader = req.headers["authorization"];
