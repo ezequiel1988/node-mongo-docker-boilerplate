@@ -1,2 +1,7 @@
 # crud-React-Node
-Aplicación que solo se usara para el cliente React-Node
+
+
+#1 NMP INSTALL
+
+
+#2 NPM RUN DEV
