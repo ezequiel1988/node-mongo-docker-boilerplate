@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 exports.registrarUsuario = async (req, res) => {
   if (!req.body) {
     return res.status(400).send({
-      mensaje: "Usuario logeado correctamente"
+      mensaje: "No se proporcionó datos"
     });
   }
 
@@ -42,9 +42,7 @@ exports.registrarUsuario = async (req, res) => {
     res.send(data);
   } catch (err) {
     console.error(err);
-    res.status(500).send({
-      mensaje: `Hubo un problema al registar el usuario. Error: ${err}`
-    });
+    res.status(500).send(err);
   }
 };
 
