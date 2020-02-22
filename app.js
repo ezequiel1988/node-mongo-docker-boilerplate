@@ -8,7 +8,7 @@ const cors = require('cors')
 
 require("./config/passport");
 //Configuracion del puerto
-app.set("port", process.env.PORT || 4000);
+app.set("port", process.env.PORT || 3000);
 
 //Conexion a la base de datos
 
