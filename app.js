@@ -13,9 +13,9 @@ app.set("port", process.env.PORT || 3000);
 //Conexion a la base de datos
 
 mongoose
-  .connect("mongodb://localhost:27017/crud-mong", { useNewUrlParser: true })
+  .connect("mongodb://mongoDB:27017/crud-mong", { useNewUrlParser: true, useUnifiedTopology: true })
   .then(db => console.log("conectado a mongodb"))
-  .catch(err => console.error(err));
+  .catch(err => console.error(err))
 
 //middlewares
 app.use(bodyParser.json());
