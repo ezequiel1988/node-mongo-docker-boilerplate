@@ -27,6 +27,7 @@ services:
     command: mongod
     environment:
       MONGO_INITDB_DATABASE: crud-mong
+      MONGODB_URL: mongoDB
 
 networks:
   internal:

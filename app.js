@@ -5,17 +5,14 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 const session = require("express-session");
 const cors = require('cors')
+const connectDB = require('./config/connectdb')
 
 require("./config/passport");
 //Configuracion del puerto
 app.set("port", process.env.PORT || 3000);
 
 //Conexion a la base de datos
-
-mongoose
-  .connect("mongodb://mongoDB:27017/crud-mong", { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(db => console.log("conectado a mongodb"))
-  .catch(err => console.error(err))
+connectDB()
 
 //middlewares
 app.use(bodyParser.json());
@@ -41,10 +38,10 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-require("./routes/userRoutes")(app);
-require("./routes/loginRoutes")(app);
-require("./routes/productsRoute")(app);
-require("./routes/registerRoute")(app);
+require("./api/routes/userRoutes")(app);
+require("./api/routes/loginRoutes")(app);
+require("./api/routes/productsRoute")(app);
+require("./api/routes/registerRoute")(app);
 
 
 //
