@@ -62,8 +62,6 @@ exports.loginUsuario = async (req, res) => {
       password: password
     });
 
-    console.log(email, "email del req.body");
-
     try {
       const usuarioLogeado = await LoginUserModel.findOne({
         email: email
@@ -82,7 +80,7 @@ exports.loginUsuario = async (req, res) => {
       const usuario = await RegistroModel.findOne({ email: email });
 
       if (usuario !== null) {
-        jwt.sign({ usuarioARegistrar }, "secretkey", (err, token) => {
+        jwt.sign({ usuarioARegistrar }, "secretkey", {expiresIn:300} ,(err, token) => {
           if (err) {
             console.log(err);
           }
@@ -121,17 +119,17 @@ exports.loginUsuario = async (req, res) => {
 
 //Para acceder se necesita mandar un token por Authorization
 exports.findAll = async (req, res) => {
-  jwt.verify(req.token, "secretkey", (err, autData) => {
-    //verifica quien es el usuario que hizo la petición
-    if (err) {
-      res.sendStatus(403);
-    } else {
-      res.json({
-        mensaje: "no se que va acá",
-        autData
-      });
-    }
-  });
+  // jwt.verify(req.token, "secretkey", (err, autData) => {
+  //   //verifica quien es el usuario que hizo la petición
+  //   if (err) {
+  //     res.sendStatus(403);
+  //   } else {
+  //     res.json({
+  //       mensaje: "no se que va acá",
+  //       autData
+  //     });
+  //   }
+  // });
   try {
     const usuarios = await LoginUserModel.find();
     res.send(usuarios);
@@ -164,7 +162,7 @@ exports.deleteLogin = (req, res) => {
     .then(usuario => {
       if (!usuario) {
         res.status(404).send({
-          mensaje: `El usuario con el email ${req.body.email} no se encuentra`
+          mensaje: `El usuario con el email ${req.body.email} ya cerró su sesión`
         });
       }
       res.send({ mensaje: "Se ha cerrado sesión correctamente" });
